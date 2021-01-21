@@ -67,6 +67,15 @@ export class PodcastsResolver {
   ): Promise<CoreOutput> {
     return this.podcastsService.updatePodcast(updatePodcastInput);
   }
+
+  @Role(['Any'])
+  @Query(returns => SearchPodcastOutput)
+  searchPodcasts(
+    @AuthUser() authUser: User,
+    @Args() searchPodcastInput: SearchPodcastInput,
+  ): Promise<SearchPodcastOutput> {
+    return this.podcastsService.searchPodcasts(authUser, searchPodcastInput);
+  }
 }
 
 @Resolver(of => Episode)
@@ -102,15 +111,5 @@ export class EpisodeResolver {
     @Args('input') episodesSearchInput: EpisodesSearchInput,
   ): Promise<CoreOutput> {
     return this.podcastService.deleteEpisode(episodesSearchInput);
-  }
-
-  @Role(['Any'])
-  @Query(returns => SearchPodcastOutput)
-  searchPodcasts(
-    @AuthUser() authUser: User,
-    @Args() searchPodcastInput: SearchPodcastInput,
-  ): Promise<SearchPodcastOutput> {
-    console.log('.................');
-    return this.podcastService.searchPodcasts(authUser, searchPodcastInput);
   }
 }
