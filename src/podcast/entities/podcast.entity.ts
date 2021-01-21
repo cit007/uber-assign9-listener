@@ -29,7 +29,9 @@ export class Podcast extends CoreEntity {
   @Field(type => [Episode])
   episodes: Episode[];
 
-  @ManyToOne(() => User, user => user.podcasts)
+  @ManyToOne(() => User, user => user.podcasts, {
+    onDelete: 'CASCADE',
+  })
   @Field(type => User)
   user: User;
 }
