@@ -20,7 +20,12 @@ import {
   GetEpisodeOutput,
 } from './dtos/podcast.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import {
+  SearchPodcastInput,
+  SearchPodcastOutput,
+} from './dtos/search-podcast.dto';
 
 @Injectable()
 export class PodcastsService {
@@ -217,6 +222,32 @@ export class PodcastsService {
       return { ok: true };
     } catch (e) {
       return this.InternalServerErrorOutput;
+    }
+  }
+
+  async searchPodcasts(
+    authUser: User,
+    searchPodcastInput: SearchPodcastInput,
+  ): Promise<SearchPodcastOutput> {
+    try {
+      const { title } = searchPodcastInput;
+      console.log('searchPodcasts:', title);
+      const podcasts = await this.podcastRepository.find({
+        where: { title: ILike(`%${title}%`) },
+      });
+      if (!podcasts) {
+        return {
+          ok: false,
+          error: 'Could not search podcast',
+        };
+      }
+
+      return { ok: true, podcasts: podcasts };
+    } catch (error) {
+      return {
+        ok: false,
+        error: 'Could not search podcast',
+      };
     }
   }
 }
