@@ -27,6 +27,7 @@ import {
   SearchPodcastInput,
   SearchPodcastOutput,
 } from './dtos/search-podcast.dto';
+import { SubscribePodcastInput } from './dtos/subscribe-podcast.dto';
 
 @Resolver(of => Podcast)
 export class PodcastsResolver {
@@ -75,6 +76,18 @@ export class PodcastsResolver {
     @Args() searchPodcastInput: SearchPodcastInput,
   ): Promise<SearchPodcastOutput> {
     return this.podcastsService.searchPodcasts(authUser, searchPodcastInput);
+  }
+
+  @Role(['Listener'])
+  @Mutation(returns => CoreOutput)
+  subscribePodcast(
+    @AuthUser() authUser: User,
+    @Args() subscribePodcastInput: SubscribePodcastInput,
+  ): Promise<SearchPodcastOutput> {
+    return this.podcastsService.subscribePodcast(
+      authUser,
+      subscribePodcastInput,
+    );
   }
 }
 

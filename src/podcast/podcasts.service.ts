@@ -26,6 +26,7 @@ import {
   SearchPodcastInput,
   SearchPodcastOutput,
 } from './dtos/search-podcast.dto';
+import { SubscribePodcastInput } from './dtos/subscribe-podcast.dto';
 
 @Injectable()
 export class PodcastsService {
@@ -34,6 +35,8 @@ export class PodcastsService {
     private readonly podcastRepository: Repository<Podcast>,
     @InjectRepository(Episode)
     private readonly episodeRepository: Repository<Episode>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   private readonly InternalServerErrorOutput = {
@@ -131,6 +134,61 @@ export class PodcastsService {
     }
   }
 
+  async searchPodcasts(
+    authUser: User,
+    searchPodcastInput: SearchPodcastInput,
+  ): Promise<SearchPodcastOutput> {
+    try {
+      const { title } = searchPodcastInput;
+      console.log('searchPodcasts:', title);
+      const podcasts = await this.podcastRepository.find({
+        where: { title: ILike(`%${title}%`) },
+      });
+      if (!podcasts) {
+        return {
+          ok: false,
+          error: 'Could not search podcast',
+        };
+      }
+
+      return { ok: true, podcasts: podcasts };
+    } catch (error) {
+      return {
+        ok: false,
+        error: 'Could not search podcast',
+      };
+    }
+  }
+
+  async subscribePodcast(
+    authUser: User,
+    subscribePodcastInput: SubscribePodcastInput,
+  ): Promise<SearchPodcastOutput> {
+    try {
+      const { podcastId } = subscribePodcastInput;
+      const { id } = authUser;
+      const podcast = await this.podcastRepository.findOne({ id: podcastId });
+      const user = await this.userRepository.findOne({ id });
+      if (!podcast || !user) {
+        return {
+          ok: false,
+          error: 'Could not subscribe podcast',
+        };
+      }
+
+      podcast.user = user;
+      this.podcastRepository.save(podcast);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: 'Could not subscribe podcast',
+      };
+    }
+  }
+
   async getEpisodes(podcastId: number): Promise<EpisodesOutput> {
     const { podcast, ok, error } = await this.getPodcast(podcastId);
     if (!ok) {
@@ -222,32 +280,6 @@ export class PodcastsService {
       return { ok: true };
     } catch (e) {
       return this.InternalServerErrorOutput;
-    }
-  }
-
-  async searchPodcasts(
-    authUser: User,
-    searchPodcastInput: SearchPodcastInput,
-  ): Promise<SearchPodcastOutput> {
-    try {
-      const { title } = searchPodcastInput;
-      console.log('searchPodcasts:', title);
-      const podcasts = await this.podcastRepository.find({
-        where: { title: ILike(`%${title}%`) },
-      });
-      if (!podcasts) {
-        return {
-          ok: false,
-          error: 'Could not search podcast',
-        };
-      }
-
-      return { ok: true, podcasts: podcasts };
-    } catch (error) {
-      return {
-        ok: false,
-        error: 'Could not search podcast',
-      };
     }
   }
 }
