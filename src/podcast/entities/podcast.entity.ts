@@ -4,6 +4,7 @@ import { IsString, Min, Max, IsNumber } from 'class-validator';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CoreEntity } from './core.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Comment } from './comment.entity';
 
 @Entity()
 @ObjectType()
@@ -28,6 +29,10 @@ export class Podcast extends CoreEntity {
   @OneToMany(() => Episode, episode => episode.podcast)
   @Field(type => [Episode])
   episodes: Episode[];
+
+  @OneToMany(() => Comment, comment => comment.podcast)
+  @Field(type => [Comment])
+  comments: Comment[];
 
   @ManyToOne(() => User, user => user.podcasts, {
     onDelete: 'CASCADE',

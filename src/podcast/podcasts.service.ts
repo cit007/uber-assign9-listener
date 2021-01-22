@@ -31,6 +31,11 @@ import {
   SeeSubscriptionInput,
   SeeSubscriptionOutput,
 } from './dtos/see-subscription.dto';
+import {
+  CreateCommentInput,
+  CreateCommentOutput,
+} from './dtos/create-comment.dto';
+import { Comment } from './entities/comment.entity';
 
 @Injectable()
 export class PodcastsService {
@@ -41,6 +46,8 @@ export class PodcastsService {
     private readonly episodeRepository: Repository<Episode>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
 
   private readonly InternalServerErrorOutput = {
@@ -216,6 +223,36 @@ export class PodcastsService {
       return {
         ok: false,
         error: 'Could not find subscription-podcast',
+      };
+    }
+  }
+
+  async createComment(
+    authUser: User,
+    createCommentInput: CreateCommentInput,
+  ): Promise<CreateCommentOutput> {
+    try {
+      const userId = authUser.id;
+      const { postId, content } = createCommentInput;
+
+      const podcast = await this.podcastRepository.findOne({ id: postId });
+      if (!podcast) {
+        return {
+          ok: false,
+          error: 'Could not create comment',
+        };
+      }
+      const comment = await this.commentRepository.create({ content });
+      comment.podcast = podcast;
+      comment.userId = userId;
+      await this.commentRepository.save(comment);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: 'Could not create comment',
       };
     }
   }

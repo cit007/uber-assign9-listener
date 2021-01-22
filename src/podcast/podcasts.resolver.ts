@@ -32,6 +32,11 @@ import {
   SeeSubscriptionInput,
   SeeSubscriptionOutput,
 } from './dtos/see-subscription.dto';
+import { Comment } from './entities/comment.entity';
+import {
+  CreateCommentInput,
+  CreateCommentOutput,
+} from './dtos/create-comment.dto';
 
 @Resolver(of => Podcast)
 export class PodcastsResolver {
@@ -140,5 +145,19 @@ export class EpisodeResolver {
     @Args('input') episodesSearchInput: EpisodesSearchInput,
   ): Promise<CoreOutput> {
     return this.podcastService.deleteEpisode(episodesSearchInput);
+  }
+}
+
+@Resolver(of => Comment)
+export class CommentResolver {
+  constructor(private readonly podcastService: PodcastsService) {}
+
+  @Mutation(returns => CoreOutput)
+  @Role(['Listener'])
+  createComment(
+    @AuthUser() authUser: User,
+    @Args('input') createCommentInput: CreateCommentInput,
+  ): Promise<CreateCommentOutput> {
+    return this.podcastService.createComment(authUser, createCommentInput);
   }
 }
