@@ -10,12 +10,17 @@ import { Repository } from 'typeorm';
 import { JwtService } from '../jwt/jwt.service';
 import { UserProfileOutput } from './dtos/user-profile.dto';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
+import { SubscribePodcastInput } from './dtos/subscribe-podcast.dto';
+import { SearchPodcastOutput } from 'src/podcast/dtos/search-podcast.dto';
+import { Podcast } from 'src/podcast/entities/podcast.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly users: Repository<User>,
+    @InjectRepository(Podcast)
+    private readonly podcastRepository: Repository<Podcast>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -111,6 +116,44 @@ export class UsersService {
       return {
         ok: false,
         error: 'Could not update profile',
+      };
+    }
+  }
+
+  async subscribePodcast(
+    authUser: User,
+    subscribePodcastInput: SubscribePodcastInput,
+  ): Promise<SearchPodcastOutput> {
+    try {
+      const { podcastId } = subscribePodcastInput;
+      const { id } = authUser;
+      const podcast = await this.podcastRepository.findOne({ id: podcastId });
+      const listener = await this.users.findOne({ id });
+      if (!podcast || !listener) {
+        return {
+          ok: false,
+          error: 'Could not subscribe podcast',
+        };
+      }
+
+      console.log('###subscriptions1 :', listener);
+      if (listener.subscriptions.some(item => item.id === podcast.id)) {
+        listener.subscriptions = listener.subscriptions.filter(
+          item => item.id !== podcast.id,
+        );
+      } else {
+        listener.subscriptions.push(podcast);
+      }
+
+      console.log('###subscriptions2 :', listener);
+      this.users.save(listener);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: 'Could not subscribe podcast',
       };
     }
   }

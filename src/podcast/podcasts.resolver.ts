@@ -27,11 +27,6 @@ import {
   SearchPodcastInput,
   SearchPodcastOutput,
 } from './dtos/search-podcast.dto';
-import { SubscribePodcastInput } from './dtos/subscribe-podcast.dto';
-import {
-  SeeSubscriptionInput,
-  SeeSubscriptionOutput,
-} from './dtos/see-subscription.dto';
 import { Comment } from './entities/comment.entity';
 import {
   CreateCommentInput,
@@ -87,29 +82,29 @@ export class PodcastsResolver {
     return this.podcastsService.searchPodcasts(authUser, searchPodcastInput);
   }
 
-  @Role(['Listener'])
-  @Mutation(returns => CoreOutput)
-  subscribePodcast(
-    @AuthUser() authUser: User,
-    @Args() subscribePodcastInput: SubscribePodcastInput,
-  ): Promise<SearchPodcastOutput> {
-    return this.podcastsService.subscribePodcast(
-      authUser,
-      subscribePodcastInput,
-    );
-  }
+  // @Role(['Listener'])
+  // @Mutation(returns => CoreOutput)
+  // subscribePodcast(
+  //   @AuthUser() authUser: User,
+  //   @Args() subscribePodcastInput: SubscribePodcastInput,
+  // ): Promise<SearchPodcastOutput> {
+  //   return this.podcastsService.subscribePodcast(
+  //     authUser,
+  //     subscribePodcastInput,
+  //   );
+  // }
 
-  @Role(['Listener'])
-  @Query(returns => SearchPodcastOutput)
-  seeSubscriptions(
-    @AuthUser() authUser: User,
-    @Args() seeSubscriptionsInput: SeeSubscriptionInput,
-  ): Promise<SeeSubscriptionOutput> {
-    return this.podcastsService.seeSubscriptions(
-      authUser,
-      seeSubscriptionsInput,
-    );
-  }
+  // @Role(['Listener'])
+  // @Query(returns => SearchPodcastOutput)
+  // seeSubscriptions(
+  //   @AuthUser() authUser: User,
+  //   @Args() seeSubscriptionsInput: SeeSubscriptionInput,
+  // ): Promise<SeeSubscriptionOutput> {
+  //   return this.podcastsService.seeSubscriptions(
+  //     authUser,
+  //     seeSubscriptionsInput,
+  //   );
+  // }
 }
 
 @Resolver(of => Episode)

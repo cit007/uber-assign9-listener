@@ -12,6 +12,10 @@ import { AuthGuard } from '../auth/auth.guard';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 import { Role } from 'src/auth/role.decorator';
+import {
+  SubscribePodcastInput,
+  SubscribePodcastOutput,
+} from './dtos/subscribe-podcast.dto';
 
 @Resolver(of => User)
 export class UsersResolver {
@@ -50,5 +54,14 @@ export class UsersResolver {
     @Args('input') editProfileInput: EditProfileInput,
   ): Promise<EditProfileOutput> {
     return this.usersService.editProfile(authUser.id, editProfileInput);
+  }
+
+  @Role(['Listener'])
+  @Mutation(returns => SubscribePodcastOutput)
+  subscribePodcast(
+    @AuthUser() authUser: User,
+    @Args() subscribePodcastInput: SubscribePodcastInput,
+  ): Promise<SubscribePodcastOutput> {
+    return this.usersService.subscribePodcast(authUser, subscribePodcastInput);
   }
 }

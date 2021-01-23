@@ -5,7 +5,15 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { IsString, IsEmail } from 'class-validator';
-import { Column, Entity, BeforeInsert, BeforeUpdate, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  BeforeInsert,
+  BeforeUpdate,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { CoreEntity } from './core.entity';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
@@ -44,6 +52,12 @@ export class User extends CoreEntity {
   @OneToMany(() => Comment, comment => comment.user)
   @Field(type => [Comment])
   comments: Comment[];
+
+  @ManyToMany(() => Podcast, {
+    eager: true,
+  })
+  @JoinTable()
+  subscriptions: Podcast[];
 
   @BeforeInsert()
   @BeforeUpdate()
