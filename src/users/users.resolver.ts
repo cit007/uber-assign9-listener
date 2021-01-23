@@ -20,6 +20,7 @@ import {
   SeeSubscriptionInput,
   SeeSubscriptionOutput,
 } from './dtos/see-subscription.dto';
+import { PlayEpisodeInput, PlayEpisodeOutput } from './dtos/play-episode.dto';
 
 @Resolver(of => User)
 export class UsersResolver {
@@ -76,5 +77,14 @@ export class UsersResolver {
     @Args() seeSubscriptionsInput: SeeSubscriptionInput,
   ): Promise<SeeSubscriptionOutput> {
     return this.usersService.seeSubscriptions(authUser, seeSubscriptionsInput);
+  }
+
+  @Role(['Listener'])
+  @Mutation(returns => PlayEpisodeOutput)
+  playEpisode(
+    @AuthUser() authUser: User,
+    @Args() playEpisodeInput: PlayEpisodeInput,
+  ): Promise<PlayEpisodeOutput> {
+    return this.usersService.playEpisode(authUser, playEpisodeInput);
   }
 }

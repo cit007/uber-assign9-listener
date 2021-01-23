@@ -17,6 +17,8 @@ import {
   SeeSubscriptionInput,
   SeeSubscriptionOutput,
 } from './dtos/see-subscription.dto';
+import { PlayEpisodeInput, PlayEpisodeOutput } from './dtos/play-episode.dto';
+import { Episode } from 'src/podcast/entities/episode.entity';
 
 @Injectable()
 export class UsersService {
@@ -25,6 +27,8 @@ export class UsersService {
     private readonly users: Repository<User>,
     @InjectRepository(Podcast)
     private readonly podcastRepository: Repository<Podcast>,
+    @InjectRepository(Episode)
+    private readonly episodeRepository: Repository<Episode>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -181,6 +185,59 @@ export class UsersService {
       return {
         ok: false,
         error: 'Could not find subscription-podcast',
+      };
+    }
+  }
+
+  async playEpisode(
+    authUser: User,
+    playEpisodeInput: PlayEpisodeInput,
+  ): Promise<PlayEpisodeOutput> {
+    try {
+      const { episodeId } = playEpisodeInput;
+      const { id } = authUser;
+      const episode = await this.episodeRepository.findOne(
+        { id: episodeId },
+        { relations: ['podcast'] },
+      );
+      const listener = await this.users.findOne({ id });
+      if (!episode || !listener) {
+        return {
+          ok: false,
+          error: 'Could not play episode',
+        };
+      }
+
+      // check episode of subscribing podcast
+      // console.log('listener.subscriptions :', listener.subscriptions);
+      // console.log('episode.podcast:', episode.podcast);
+      if (
+        listener.subscriptions.some(item => item.id === episode.podcast.id) ===
+        false
+      ) {
+        return {
+          ok: false,
+          error: 'Could not find podcast',
+        };
+      }
+
+      console.log('###playEpisode1 :', listener);
+      if (listener.playEpisode.some(item => item.id === episode.id)) {
+        console.log('already played');
+      } else {
+        listener.playEpisode.push(episode);
+      }
+
+      console.log('###playEpisode2 :', listener);
+      this.users.save(listener);
+      return {
+        ok: true,
+        episodes: listener.playEpisode,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: 'Could not play episode',
       };
     }
   }
