@@ -236,7 +236,7 @@ export class PodcastsService {
       const { postId, content } = createCommentInput;
 
       const podcast = await this.podcastRepository.findOne({ id: postId });
-      const user = await this.podcastRepository.findOne({ id: userId });
+      const user = await this.userRepository.findOne({ id: userId });
       if (!podcast || !user) {
         return {
           ok: false,
@@ -245,9 +245,7 @@ export class PodcastsService {
       }
       const comment = await this.commentRepository.create({ content });
       comment.podcast = podcast;
-      //@TODO confirm user
-      comment.user = authUser;
-      // comment.user = user;
+      comment.user = user;
       await this.commentRepository.save(comment);
       return {
         ok: true,
