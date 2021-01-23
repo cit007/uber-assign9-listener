@@ -141,6 +141,7 @@ export class UsersService {
       }
 
       console.log('###subscriptions1 :', listener);
+      // IF CLIENT SUBSCRIBE THE PODCAST, TOGGLE IT. OTHERWISE, ADD IT
       if (listener.subscriptions.some(item => item.id === podcast.id)) {
         listener.subscriptions = listener.subscriptions.filter(
           item => item.id !== podcast.id,

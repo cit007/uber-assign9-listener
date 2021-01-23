@@ -171,62 +171,6 @@ export class PodcastsService {
     }
   }
 
-  // async subscribePodcast(
-  //   authUser: User,
-  //   subscribePodcastInput: SubscribePodcastInput,
-  // ): Promise<SearchPodcastOutput> {
-  //   try {
-  //     const { podcastId } = subscribePodcastInput;
-  //     const { id } = authUser;
-  //     const podcast = await this.podcastRepository.findOne({ id: podcastId });
-  //     const user = await this.userRepository.findOne({ id });
-  //     if (!podcast || !user) {
-  //       return {
-  //         ok: false,
-  //         error: 'Could not subscribe podcast',
-  //       };
-  //     }
-
-  //     podcast.user = user;
-  //     this.podcastRepository.save(podcast);
-  //     return {
-  //       ok: true,
-  //     };
-  //   } catch (error) {
-  //     return {
-  //       ok: false,
-  //       error: 'Could not subscribe podcast',
-  //     };
-  //   }
-  // }
-
-  // async seeSubscriptions(
-  //   authUser: User,
-  //   seeSubscriptionsInput: SeeSubscriptionInput,
-  // ): Promise<SeeSubscriptionOutput> {
-  //   try {
-  //     const { userId } = seeSubscriptionsInput;
-  //     console.log('seeSubscriptionsInput id:', userId);
-  //     const user = await this.userRepository.findOne({ id: userId });
-  //     console.log('seeSubscriptionsInput user:', user);
-  //     const podcasts = await this.podcastRepository.find({ user });
-  //     console.log('seeSubscriptionsInput podcast:', podcasts);
-  //     if (!podcasts || !user) {
-  //       return {
-  //         ok: false,
-  //         error: 'Could not find subscription-podcast',
-  //       };
-  //     }
-
-  //     return { ok: true, podcasts: podcasts };
-  //   } catch (error) {
-  //     return {
-  //       ok: false,
-  //       error: 'Could not find subscription-podcast',
-  //     };
-  //   }
-  // }
-
   async createComment(
     authUser: User,
     createCommentInput: CreateCommentInput,

@@ -81,30 +81,6 @@ export class PodcastsResolver {
   ): Promise<SearchPodcastOutput> {
     return this.podcastsService.searchPodcasts(authUser, searchPodcastInput);
   }
-
-  // @Role(['Listener'])
-  // @Mutation(returns => CoreOutput)
-  // subscribePodcast(
-  //   @AuthUser() authUser: User,
-  //   @Args() subscribePodcastInput: SubscribePodcastInput,
-  // ): Promise<SearchPodcastOutput> {
-  //   return this.podcastsService.subscribePodcast(
-  //     authUser,
-  //     subscribePodcastInput,
-  //   );
-  // }
-
-  // @Role(['Listener'])
-  // @Query(returns => SearchPodcastOutput)
-  // seeSubscriptions(
-  //   @AuthUser() authUser: User,
-  //   @Args() seeSubscriptionsInput: SeeSubscriptionInput,
-  // ): Promise<SeeSubscriptionOutput> {
-  //   return this.podcastsService.seeSubscriptions(
-  //     authUser,
-  //     seeSubscriptionsInput,
-  //   );
-  // }
 }
 
 @Resolver(of => Episode)
