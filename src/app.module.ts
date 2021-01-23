@@ -18,7 +18,7 @@ import { Comment } from './podcast/entities/comment.entity';
       database: 'db.sqlite3',
       synchronize: true,
       logging: process.env.NODE_ENV !== 'test',
-      entities: [Podcast, Episode, User, Comment],
+      entities: [Podcast, Episode, User, Comment, Episode],
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,

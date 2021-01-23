@@ -4,9 +4,10 @@ import { UsersService } from './users.service';
 import { UsersResolver } from './users.resolver';
 import { User } from './entities/user.entity';
 import { Podcast } from 'src/podcast/entities/podcast.entity';
+import { Episode } from 'src/podcast/entities/episode.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Podcast])],
+  imports: [TypeOrmModule.forFeature([User, Podcast, Episode])],
   providers: [UsersResolver, UsersService],
   exports: [UsersService],
 })
