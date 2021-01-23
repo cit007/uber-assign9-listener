@@ -10,6 +10,7 @@ import { CoreEntity } from './core.entity';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Podcast } from 'src/podcast/entities/podcast.entity';
+import { Comment } from 'src/podcast/entities/comment.entity';
 
 export enum UserRole {
   Host = 'Host',
@@ -39,6 +40,10 @@ export class User extends CoreEntity {
   @OneToMany(() => Podcast, podcast => podcast.user)
   @Field(type => [Podcast])
   podcasts: Podcast[];
+
+  @OneToMany(() => Comment, comment => comment.user)
+  @Field(type => [Comment])
+  comments: Comment[];
 
   @BeforeInsert()
   @BeforeUpdate()

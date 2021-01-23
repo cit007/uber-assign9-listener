@@ -19,7 +19,9 @@ export class Comment extends CoreEntity {
   @Field(type => Podcast)
   podcast: Podcast;
 
-  @Column()
-  @Field(type => Int)
-  userId: number;
+  @ManyToOne(() => User, user => user.comments, {
+    onDelete: 'CASCADE',
+  })
+  @Field(type => User)
+  user: User;
 }

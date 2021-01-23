@@ -236,7 +236,8 @@ export class PodcastsService {
       const { postId, content } = createCommentInput;
 
       const podcast = await this.podcastRepository.findOne({ id: postId });
-      if (!podcast) {
+      const user = await this.podcastRepository.findOne({ id: userId });
+      if (!podcast || !user) {
         return {
           ok: false,
           error: 'Could not create comment',
@@ -244,7 +245,9 @@ export class PodcastsService {
       }
       const comment = await this.commentRepository.create({ content });
       comment.podcast = podcast;
-      comment.userId = userId;
+      //@TODO confirm user
+      comment.user = authUser;
+      // comment.user = user;
       await this.commentRepository.save(comment);
       return {
         ok: true,
