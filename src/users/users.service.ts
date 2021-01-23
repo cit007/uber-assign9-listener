@@ -13,6 +13,10 @@ import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 import { SubscribePodcastInput } from './dtos/subscribe-podcast.dto';
 import { SearchPodcastOutput } from 'src/podcast/dtos/search-podcast.dto';
 import { Podcast } from 'src/podcast/entities/podcast.entity';
+import {
+  SeeSubscriptionInput,
+  SeeSubscriptionOutput,
+} from './dtos/see-subscription.dto';
 
 @Injectable()
 export class UsersService {
@@ -154,6 +158,28 @@ export class UsersService {
       return {
         ok: false,
         error: 'Could not subscribe podcast',
+      };
+    }
+  }
+
+  async seeSubscriptions(
+    authUser: User,
+    seeSubscriptionsInput: SeeSubscriptionInput,
+  ): Promise<SeeSubscriptionOutput> {
+    try {
+      const { userId } = seeSubscriptionsInput;
+      const listener = await this.users.findOne({ id: userId });
+      if (!listener) {
+        return {
+          ok: false,
+          error: 'Could not find subscription-podcast',
+        };
+      }
+      return { ok: true, podcasts: listener.subscriptions };
+    } catch (error) {
+      return {
+        ok: false,
+        error: 'Could not find subscription-podcast',
       };
     }
   }

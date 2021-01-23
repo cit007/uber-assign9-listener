@@ -1,6 +1,6 @@
 import { ArgsType, ObjectType, Field, Int } from '@nestjs/graphql';
 import { Podcast } from 'src/podcast/entities/podcast.entity';
-import { CoreOutput } from '../../users/dtos/output.dto';
+import { CoreOutput } from './output.dto';
 
 @ArgsType()
 export class SeeSubscriptionInput {

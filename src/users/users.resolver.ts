@@ -16,6 +16,10 @@ import {
   SubscribePodcastInput,
   SubscribePodcastOutput,
 } from './dtos/subscribe-podcast.dto';
+import {
+  SeeSubscriptionInput,
+  SeeSubscriptionOutput,
+} from './dtos/see-subscription.dto';
 
 @Resolver(of => User)
 export class UsersResolver {
@@ -63,5 +67,14 @@ export class UsersResolver {
     @Args() subscribePodcastInput: SubscribePodcastInput,
   ): Promise<SubscribePodcastOutput> {
     return this.usersService.subscribePodcast(authUser, subscribePodcastInput);
+  }
+
+  @Role(['Listener'])
+  @Query(returns => SeeSubscriptionOutput)
+  seeSubscriptions(
+    @AuthUser() authUser: User,
+    @Args() seeSubscriptionsInput: SeeSubscriptionInput,
+  ): Promise<SeeSubscriptionOutput> {
+    return this.usersService.seeSubscriptions(authUser, seeSubscriptionsInput);
   }
 }
